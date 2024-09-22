@@ -1,38 +1,45 @@
 # -*- coding: utf-8 -*-
-import sys, os
+import sys
+import os
 from time import time
 
-
 def create_dir(folder):
-    '''
-    creates a folder, if necessary
-    '''
+    """
+    Creates a folder if it doesn't already exist.
+    """
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-
-class TimePrint(object):
-    '''
-    Simple convenience class to print who long it takes between successive calls to its __init__ function.
-    Usage example:
-        TimePrint("some text")          -- simply prints "some text"
+class TimePrint:
+    """
+    Simple convenience class to measure and print how long it takes between successive calls.
+    
+    Usage:
+        tp = TimePrint("Start") -- prints "Start"
         <do some stuff here>
-        TimePrint("some other text ")   -- prints "some other text (took ?s)", where ? is the time passed since TimePrint("some text") was called
-    '''
-    t_last = None
-
+        tp.p("End") -- prints "End (took ?s)", where ? is the time passed since the "Start" call.
+    """
+    
     def __init__(self, text):
-        TimePrint.p(text)
+        """
+        Initializes the TimePrint object, prints the initial message, and stores the current time.
+        """
+        self.t_last = time()  # Store the time of the initial call
+        self.p(text)
 
-    @classmethod
-    def p(cls, text):
-        t = time()
-        print text,
-        if cls.t_last!=None:
-            print " (took ", t-cls.t_last, "s)"
-        cls.t_last = t
-        sys.stdout.flush()
+    def p(self, text):
+        """
+        Prints the provided text along with the time taken since the last call.
+        """
+        t = time()  # Current time
+        elapsed_time = t - self.t_last
+        print(f"{text}", end='')  # Print text without newline
+        if self.t_last is not None:
+            print(f" (took {elapsed_time:.2f}s)")
+        else:
+            print()
+        self.t_last = t  # Update the last recorded time
+        sys.stdout.flush()  # Ensure the output is flushed immediately
 
-
-if __name__=="__main__":
-    print "this is just a library."
+if __name__ == "__main__":
+    print("This is just a library.")
